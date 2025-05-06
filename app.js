@@ -1,8 +1,17 @@
 import express from "express";
 import mongoose from "mongoose";
+import userRoutes from "./routes/user.routes.js";
 
 const app =  express()
 const PORT = 3000
+
+//Middleware
+app.use(express.json())
+
+
+//Routes
+app.use('/api/users', userRoutes)
+
 
 // MongoDB connection
 mongoose
@@ -16,3 +25,10 @@ mongoose
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
 })
+
+
+
+
+
+
+export default app
