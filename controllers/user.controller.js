@@ -3,8 +3,11 @@ import User from "../models/User.model.js";
 
 export const getAllUsers = async (req, res, next) => {
     try {
-        
+     
         const users = await User.find();
+        if(users.length === 0){
+            return res.status(404).json({message: "No users found"})
+        }
         res.json(users)
     } catch (error) {
         console.error("Error fetching users:", error);
@@ -14,16 +17,14 @@ export const getAllUsers = async (req, res, next) => {
 }
 
 export const getUser = async (req, res, next) => {
-    const {userId} = req.params;
+    const {id: userId} = req.params;
         try {
             const user = await User.findById(userId)
             if(!user){
                 return res.status(404).json({message: "User not found"})
             }
-            res.json(user)
+            res.status(200).json({ transactions: user.transactions, balance: user.balance })
         } catch (error) {
-            console.error("Error fetching User", error)
-            res.status(500).json({message: "Server Error", error: error.message})
             next(error);
         }
 }
@@ -40,32 +41,30 @@ export const createDummyUser = async (req, res, next) => {
     }
 }
 
-export const deleteUser = async (req, res, next) => {
-    const {userId} = req.params;
-      try {
-            const user = await User.findByIdAndDelete(userId)
-            if(!user){
-                res.status(404).json({message: "User not found"})
-            }
-            res.status(200).json({message: "User has been deleted", user})
-      } catch (error) {
-        console.error("Error deleting user", error)
-        res.status(500).jsoon({message: "Server Error", error: error.message})
-        next(error);
-      }
-    }
+    export const deleteUser = async (req, res, next) => {
+        const {userId} = req.params;
+        try {
+                const user = await User.findByIdAndDelete(userId)
+                if(!user){
+                   return res.status(404).json({message: "User not found"})
+                }
+                res.status(200).json({message: "User has been deleted", user})
+        } catch (error) {
+            next(error);
+        }
+        }
+
+
 export const deleteAllUsers = async (req, res, next) => {
     try {
         const users = await User.deleteMany()
         res.status(200).json({message: "All users have been deleted", users})
     } catch (error) {
-        console.error("Error deleting all users", error)
-        res.status(500).json({message: "Server Error", error: error.message})
         next(error);
     }
 }
 
-export const getTransactions = async () => {
+export const getTransactions = async (req, res, next) => {
     const {userId} = req.params
         try {
             const user = await User.findById(userId)
@@ -74,9 +73,7 @@ export const getTransactions = async () => {
             }
             res.status(200).json({transactions: user.transactions, balance: user.balance})
         } catch (error) {
-            console.error("Error fetching transactions", error)
-            res.status(500).json({message: "Server Error", error: error.message})
-            next()
+            next(error)
         }
 }
 
@@ -98,25 +95,27 @@ export const deleteTransaction = async (req, res, next) => {
         res.status(200).json({message: "Transaction has been deleted", user})
     
     } catch (error) {
-        console.error("Error deleting transaction", error)
-        res.status(500).json({message: "Server Error", error: error.message})
-        next()
+        next(error)
     }
 }
 
-export const deleteAllTransactions = async () => {
+export const deleteAllTransactions = async (req, res, next) => {
     const {userId} = req.params
     try {
         const user =  await User.findById(userId)
         if(!user){
-            res.status(404).json({message: "User not found"})
+            return res.status(404).json({message: "User not found"})
         }
+
+        //Check if the user has any transactions
+        if(user.transactions.length === 0){
+            return res.status(404).json({message: "No transactions found"})
+        }
+
         user.transactions = []
         await user.save()
         res.status(200).json({message: "All transactions have been deleted", user})
     } catch (error) {
-        console.error("Error deleting all transactions", error)
-        res.status(500).json({message: "Server Error", error: error.message})
-        next()
+        next(error)
     }
 }

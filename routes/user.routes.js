@@ -12,7 +12,7 @@ userRoutes.post('/cashin', cashIn)
 userRoutes.post('/cashout', cashOut)
 userRoutes.get('/transactions/:userId', getTransactions)
 userRoutes.delete('/:userId/transactions/:transactionId', deleteTransaction)
-userRoutes.post('/clear-transactions', deleteAllTransactions)
+userRoutes.delete('/clear-transactions/:userId', deleteAllTransactions)
 userRoutes.delete('/:userId', deleteUser)
 userRoutes.delete('/', deleteAllUsers)
 
