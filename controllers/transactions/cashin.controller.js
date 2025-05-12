@@ -1,4 +1,4 @@
-import User from "../models/User.model.js"
+import User from "../../models/User.model.js"
 
 
 export const cashIn = async (req, res, next) => {

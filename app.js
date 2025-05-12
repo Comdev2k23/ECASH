@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
+import transactionRoutes from "./routes/transactions.routes.js";
 
 // Load environment variables
 if (process.env.NODE_ENV === 'production') {
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/transactions', transactionRoutes)
 
 // MongoDB connection
 mongoose.connect(process.env.DB_URL, {
@@ -30,7 +32,7 @@ mongoose.connect(process.env.DB_URL, {
 // Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT} || Environment: ${process.env.NODE_ENV}`);
 });
 
 export default app;
