@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createDummyUser, deleteAllTransactions, deleteAllUsers, deleteTransaction, deleteUser, getAllUsers, getTransactions, getUser } from "../controllers/user.controller.js";
+import { updateUserBalance } from "../controllers/transactions/userBalance.controller.js";
 
 
 const userRoutes = Router()
@@ -7,6 +8,7 @@ const userRoutes = Router()
 userRoutes.get('/', getAllUsers)
 userRoutes.get('/:id', getUser)
 userRoutes.post('/dummy', createDummyUser)
+userRoutes.post('/:userId/update-balance', updateUserBalance)
 userRoutes.get('/transactions/:userId', getTransactions)
 userRoutes.delete('/:userId/transactions/:transactionId', deleteTransaction)
 userRoutes.delete('/clear-transactions/:userId', deleteAllTransactions)

@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
 import transactionRoutes from "./routes/transactions.routes.js";
+import { protect } from "./middlewares/auth.js";
+import authRoutes from "./routes/auth.routes.js";
 
 // Load environment variables
 if (process.env.NODE_ENV === 'production') {
@@ -17,9 +19,14 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+
+// Routes
+app.use('/api/user', authRoutes);  // Auth routes (signup, login) are public
+app.use("/api", protect);  // Protect other routes (user data, transactions)
+
 // Routes
 app.use('/api/users', userRoutes);
-app.use('/api/transactions', transactionRoutes)
+app.use('/api/transactions', transactionRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.DB_URL, {
