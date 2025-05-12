@@ -1,34 +1,36 @@
 import express from "express";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
 
-const app =  express()
-const PORT = 3000
+// Load environment variables
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: '.env.production' });
+} else {
+  dotenv.config({ path: '.env.development' });
+}
 
-//Middleware
-app.use(express.json())
+// Create Express app
+const app = express();
 
+// Middleware
+app.use(express.json());
 
-//Routes
-app.use('/api/users', userRoutes)
-
+// Routes
+app.use('/api/users', userRoutes);
 
 // MongoDB connection
-mongoose
-  .connect( "mongodb+srv://nachttv22:nachttv22@ecash.5u01dff.mongodb.net/ECASH?retryWrites=true&w=majority&appName=ecash",{
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err))
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
+mongoose.connect(process.env.DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 })
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
+// Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server is running on port ${PORT}`);
+});
 
-
-
-
-
-export default app
+export default app;
