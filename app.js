@@ -22,11 +22,11 @@ app.use(express.json());
 
 // Routes
 app.use('/api/user', authRoutes);  // Auth routes (signup, login) are public
-app.use("/api", protect);  // Protect other routes (user data, transactions)
+// app.use("/api", protect);  // Protect other routes (user data, transactions)
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/transactions', transactionRoutes);
+app.use('/api/users', protect, userRoutes);
+app.use('/api/transactions', protect, transactionRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.DB_URL, {
